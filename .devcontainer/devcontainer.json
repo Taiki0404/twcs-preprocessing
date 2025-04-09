@@ -1,0 +1,22 @@
+{
+	"name": "ProjectName",
+	"context": "..",
+	"dockerFile": "Dockerfile",
+
+	"customizations": {
+		"vscode": {	
+			"extensions": [
+				"GitHub.copilot",
+				"GitHub.copilot-chat",
+				"mhutchie.git-graph",
+				"eamodio.gitlens",
+				"ms-python.python",
+				"ms-toolsai.jupyter",
+				"charliermarsh.ruff",
+				"ms-python.mypy-type-checker"
+			]
+		}
+	},
+
+	"remoteUser": "vscode"
+}
