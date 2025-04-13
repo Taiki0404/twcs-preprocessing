@@ -30,5 +30,8 @@ class TextCleaner:
     def remove_symbol(self, text: str) -> str:
         return re.sub(self.regex_patterns.SYMBOLS, "", text)
 
+    def remove_html_tags(self, text: str) -> str:
+        return re.sub(r"<.*?>", "", text)
+
     def replace_urls(self, text: str, replacement: str = "") -> str:
         return re.sub(self.regex_patterns.URL, replacement, text)
