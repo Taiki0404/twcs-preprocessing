@@ -27,8 +27,8 @@ class TextCleaner:
     def remove_page_notation(self, text: str) -> str:
         return re.sub(self.regex_patterns.PAGE_NOTATION, "", text)
 
-    def remove_symbol(self, text: str) -> str:
-        return re.sub(self.regex_patterns.SYMBOLS, "", text)
-
     def remove_html_tags(self, text: str) -> str:
         return re.sub(r"<.*?>", "", text)
+
+    def remove_symbol(self, text: str) -> str:
+        return re.sub(self.regex_patterns.SYMBOLS, "", text)
