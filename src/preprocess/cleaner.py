@@ -32,23 +32,3 @@ class TextCleaner:
 
     def remove_symbol(self, text: str) -> str:
         return re.sub(self.regex_patterns.SYMBOLS, "", text)
-
-    def clean(self, text: str) -> str:
-        if not text:
-            return text
-
-        steps = [
-            self.remove_emojis,
-            self.remove_urls,
-            self.remove_parentheses_with_text,
-            self.remove_mentions,
-            self.remove_tags,
-            self.remove_page_notation,
-            self.remove_html_tags,
-            self.remove_symbol,
-        ]
-
-        for step in steps:
-            text = step(text)
-
-        return text
