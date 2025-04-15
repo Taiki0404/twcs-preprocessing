@@ -1,6 +1,6 @@
-from preprocess.cleaner import TextCleaner
-from preprocess.normalizer import TextNormalizer
-from preprocess.regex_patterns import RegexPatterns
+from src.preprocess.cleaner import TextCleaner
+from src.preprocess.normalizer import TextNormalizer
+from src.preprocess.regex_patterns import RegexPatterns
 
 
 class TextPreprocessingPipeline:
