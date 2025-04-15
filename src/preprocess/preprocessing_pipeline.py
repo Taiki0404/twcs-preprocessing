@@ -9,6 +9,8 @@ class TextPreprocessingPipeline:
         self.normalizer = TextNormalizer()
 
     def preprocess(self, text: str) -> str:
+        if text is None:
+            return None
         if not text:
             return text
 
