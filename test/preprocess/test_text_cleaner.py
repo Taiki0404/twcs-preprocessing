@@ -1,20 +1,17 @@
 import pytest
 
 from src.preprocess.cleaner import TextCleaner
-
-
-class MockRegexPatterns:
-    URL = r"https?://(?:www\.)?[^\s/$.?#].[^\s]*"
-    PARENTHESES_WITH_TEXT = r"\(.*?\)"
-    MENTIONS = r"@\w+"
-    TAGS = r"#\w+"
-    PAGE_NOTATION = r"\d+/\d+"
-    SYMBOLS = r"[!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]"
+from src.preprocess.regex_patterns import RegexPatterns
 
 
 @pytest.fixture
-def text_cleaner():
-    return TextCleaner(regex_patterns=MockRegexPatterns)
+def regex_patterns():
+    return RegexPatterns()
+
+
+@pytest.fixture
+def text_cleaner(regex_patterns):
+    return TextCleaner(regex_patterns)
 
 
 @pytest.fixture
