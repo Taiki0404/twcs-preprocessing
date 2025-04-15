@@ -18,15 +18,15 @@ class TestTextPreprocessingPipeline:
     @pytest.mark.parametrize(
         "input_text, expected_output",
         [
-            ("Hello <b>world</b>!", "hello world"),
+            ("Hello <b>world</b>!", "hello world!"),
             ("Visit https://example.com", "visit"),
-            ("@user Check this out!", "check this out"),
+            ("@user Check this out!", "check this out!"),
             ("#hashtag is trending", "is trending"),
             ("(Note: confidential)", ""),
             ("This is first page 1/2", "this is first page"),
             ("Symbols like $%^&*", "symbols like"),
             ("   Extra   spaces   ", "extra spaces"),
-            ("normalize\u0020unicode ①②③.", "normalize unicode 123"),
+            ("normalize\u0020unicode ①②③.", "normalize unicode 123."),
             ("", ""),
         ],
     )

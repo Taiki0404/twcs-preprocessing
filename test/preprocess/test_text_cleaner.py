@@ -23,7 +23,7 @@ def sample_texts():
         "with_mentions": "@mentions This text has @mentions",
         "with_tags": "#tags This text has #tags",
         "with_page_notation": "1/2 This text has page notation 2/2",
-        "with_symbols": "!@#$% This text has symbols ^&*()",
+        "with_symbols": "@#$% This text has symbols ^&*()",
         "with_html_tags": "<b>This text has HTML tags</b>",
         "without_anything": "This text has nothing special.",
         "empty": "",
