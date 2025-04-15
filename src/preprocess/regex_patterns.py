@@ -4,4 +4,4 @@ class RegexPatterns:
     MENTIONS = r"@\w+"
     TAGS = r"#\w+"
     PAGE_NOTATION = r"\d+/\d+"
-    SYMBOLS = r"[\"#$%&()*+-/:;<=>@[\]^_`{|}~�©®™]"
+    SYMBOLS = r"[\"#$%&()*+\-/:;<=>@[\]^_`{|}~�©®™]"
