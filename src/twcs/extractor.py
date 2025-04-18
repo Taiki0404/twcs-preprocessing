@@ -41,3 +41,11 @@ class TwcsExtractor:
     def extract_dialog_branching(self, start: int, twcs_dict: dict) -> list[list[int]]:
         graph: dict[int, list[int]] = {}
         return self.__extract_dialog_paths(graph, start, twcs_dict)
+
+    def extract_all_dialog_branching(self, starts: list[int], twcs_dict: dict) -> list[list[int]]:
+        all_paths = []
+        for start in starts:
+            paths = self.extract_dialog_branching(start, twcs_dict)
+            all_paths.extend(paths)
+
+        return all_paths
