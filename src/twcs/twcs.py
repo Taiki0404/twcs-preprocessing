@@ -22,9 +22,6 @@ class TWCS:
     def retrieve_metadata(self) -> pd.DataFrame:
         return self.twcs[self.columns_config["for_meta_table"]]
 
-    def retrieve_text(self) -> pd.DataFrame:
-        return self.twcs[self.columns_config["to_use_in_text_table"]]
-
     def extract_processed_text(self) -> pd.DataFrame:
         texts = self.twcs["text"].tolist()
 
