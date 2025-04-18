@@ -38,5 +38,11 @@ class TWCS:
 
         return dialog_branches
 
-    def to_dict(self) -> dict[int, dict]:
-        return self.twcs.set_index("tweet_id").to_dict("index")
+    def to_dict(self, use_col: list = []) -> dict[int, dict]:
+        if not use_col:
+            return self.twcs.set_index("tweet_id").to_dict("index")
+
+        if "tweet_id" not in use_col:
+            raise ValueError("use_col must include 'tweet_id'")
+
+        return self.twcs[use_col].set_index("tweet_id").to_dict("index")
