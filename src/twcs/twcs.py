@@ -33,7 +33,7 @@ class TWCS:
         dialog_start_ids = dialog_roots["tweet_id"].tolist()
 
         dialog_branches = self.extractor.extract_all_dialog_branching(
-            dialog_start_ids, self.to_dict()
+            dialog_start_ids, self.to_dict(self.columns_config["to_use_in_pair_table"])
         )
 
         return dialog_branches
