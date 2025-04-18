@@ -2,6 +2,8 @@ from pathlib import Path
 
 import pandas as pd
 
+from preprocess.preprocessing_pipeline import TextPreprocessingPipeline
+
 from .config import columns
 from .extractor import TwcsExtractor
 
@@ -15,6 +17,7 @@ class TWCS:
         self.columns_config = columns_config
 
         self.extractor = TwcsExtractor()
+        self.preprocessor = TextPreprocessingPipeline()
 
     def retrieve_metadata(self) -> pd.DataFrame:
         return self.twcs[self.columns_config["for_meta_table"]]
@@ -23,8 +26,14 @@ class TWCS:
         return self.twcs[self.columns_config["to_use_in_text_table"]]
 
     def extract_processed_text(self) -> pd.DataFrame:
-        ...
-        return
+        texts = self.twcs["text"].tolist()
+
+        processed_texts = []
+        for text in texts:
+            processed_text = self.preprocessor.preprocess(text)
+            processed_texts.append(processed_text)
+
+        return processed_texts
 
     def extract_dialog_branches(self) -> list[list[int]]:
         dialog_roots = self.twcs[
