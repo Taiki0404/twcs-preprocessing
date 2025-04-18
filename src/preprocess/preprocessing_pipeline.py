@@ -4,7 +4,7 @@ from .regex_patterns import RegexPatterns
 
 
 class TextPreprocessingPipeline:
-    def __init__(self, regex_patterns: RegexPatterns):
+    def __init__(self, regex_patterns: RegexPatterns = RegexPatterns()):
         self.cleaner = TextCleaner(regex_patterns)
         self.normalizer = TextNormalizer()
 
