@@ -22,6 +22,9 @@ class TWCS:
     def retrieve_metadata(self) -> pd.DataFrame:
         return self.twcs[self.columns_config["for_meta_table"]]
 
+    def extract_tweet_ids(self) -> list[int]:
+        return self.twcs["tweet_id"].tolist()
+
     def extract_processed_text(self) -> pd.DataFrame:
         texts = self.twcs["text"].tolist()
 
