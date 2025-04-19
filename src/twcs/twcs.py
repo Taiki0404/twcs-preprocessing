@@ -25,7 +25,7 @@ class TWCS:
     def extract_tweet_ids(self) -> list[int]:
         return self.twcs["tweet_id"].tolist()
 
-    def extract_processed_text(self) -> pd.DataFrame:
+    def extract_processed_text(self) -> list[str]:
         texts = self.twcs["text"].tolist()
 
         processed_texts = []
