@@ -2,8 +2,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from preprocess.preprocessing_pipeline import TextPreprocessingPipeline
-
+from ..preprocess.preprocessing_pipeline import TextPreprocessingPipeline
 from .config import columns
 from .extractor import TwcsDialogExtractor
 
