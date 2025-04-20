@@ -31,3 +31,12 @@ class TableGenerator:
                 records.append([utterance, response, dialog_id])
 
         return pd.DataFrame(records, columns=columns["for_pair_table"])
+
+    def generate_tables_as_csv(self, output_dir: str):
+        metadata_table = self.generate_metadata_table()
+        text_table = self.generate_text_table()
+        pair_table = self.generate_pair_table()
+
+        metadata_table.to_csv(f"{output_dir}/metadata.csv", index=False)
+        text_table.to_csv(f"{output_dir}/text.csv", index=False)
+        pair_table.to_csv(f"{output_dir}/pair.csv", index=False)
