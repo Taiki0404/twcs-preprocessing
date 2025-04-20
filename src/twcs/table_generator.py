@@ -28,7 +28,7 @@ class TableGenerator:
                 utterance = branch[i]
                 response = branch[i + 1]
 
-                records.append([utterance, response, dialog_id])
+                records.append([utterance, response, i, dialog_id])
 
         return pd.DataFrame(records, columns=columns["for_pair_table"])
 
