@@ -5,7 +5,7 @@ import pandas as pd
 from preprocess.preprocessing_pipeline import TextPreprocessingPipeline
 
 from .config import columns
-from .extractor import TwcsExtractor
+from .extractor import TwcsDialogExtractor
 
 
 class TWCS:
@@ -16,7 +16,7 @@ class TWCS:
         self.twcs = pd.read_csv(twcs_path)
         self.columns_config = columns_config
 
-        self.extractor = TwcsExtractor()
+        self.extractor = TwcsDialogExtractor()
         self.preprocessor = TextPreprocessingPipeline()
 
     def retrieve_metadata(self) -> pd.DataFrame:

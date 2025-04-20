@@ -1,4 +1,4 @@
-class TwcsExtractor:
+class TwcsDialogExtractor:
     def __init__(self):
         pass
 
