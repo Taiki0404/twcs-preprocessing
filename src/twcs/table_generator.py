@@ -24,11 +24,10 @@ class TableGenerator:
 
         records = []
         for dialog_id, branch in enumerate(dialog_branches):
-            for i in range(len(branch) - 1):
-                utterance = branch[i]
-                response = branch[i + 1]
+            for seq in range(len(branch)):
+                utterance_id = branch[seq]
 
-                records.append([utterance, response, i, dialog_id])
+                records.append([utterance_id, seq, dialog_id])
 
         return pd.DataFrame(records, columns=columns["for_pair_table"])
 
