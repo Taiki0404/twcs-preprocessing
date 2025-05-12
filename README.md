@@ -8,6 +8,10 @@ kaggleで公開されているデータセット「[Customer Support on Twitter]
 1. kaggleから[Customer Support on Twitter](https://www.kaggle.com/datasets/thoughtvector/customer-support-on-twitter)をダウンロード
 2. `archive.zip`を解凍
 3. `twcs.csv`を`main.py`と同じ階層に配置
+4. `python main.py --twcs-path twcs.csv`を実行する
+5. `output`ディレクトリに3つのファイルが出力される
+
+## 出力されるファイルについて
 
 ## 注意事項
 
