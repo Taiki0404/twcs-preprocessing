@@ -103,6 +103,14 @@ class SequenceTable:
     def retrieve_dialog_ids_by_tweet_id(self, tweet_id: int) -> list[int]:
         return self.table.loc[self.table["utterance_id"] == tweet_id, "dialog_id"].to_list()
 
+    def retrieve_dialog_ids_by_tweet_ids(self, tweet_ids: list[int]) -> list[int]:
+        dialog_ids = []
+        for tweet_id in tweet_ids:
+            dialog_ids.extend(self.retrieve_dialog_ids_by_tweet_id(tweet_id))
+
+        return list(set(dialog_ids))
+
+
 class TableHandler:
     def __init__(
         self, text_table: TextTable, metadata_table: MetadataTable, seq_table: SequenceTable
