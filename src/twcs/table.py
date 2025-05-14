@@ -112,12 +112,10 @@ class SequenceTable:
 
 
 class TableHandler:
-    def __init__(
-        self, text_table: TextTable, metadata_table: MetadataTable, seq_table: SequenceTable
-    ):
-        self.text_table = text_table
-        self.metadata_table = metadata_table
-        self.seq_table = seq_table
+    def __init__(self, text_path: str, meta_path: str, seq_path: str):
+        self.text_table = TextTable(text_path)
+        self.metadata_table = MetadataTable(meta_path)
+        self.seq_table = SequenceTable(seq_path)
 
     def extract_dialog_contents(self, dialog_id: int) -> Dialog:
         tweet_ids = self.seq_table.retrieve_tweet_ids_of_dialog_sequence(dialog_id)
