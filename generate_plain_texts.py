@@ -3,8 +3,8 @@ from pathlib import Path
 
 import pandas as pd
 
-from src.twcs.plaintext import PlainTextGenerator
-from src.twcs.rules import NumAuthorsRule, RuleSet
+from src.twcs.output.plaintext import PlainTextGenerator
+from src.twcs.output.rules import NumAuthorsRule, RuleSet
 from src.twcs.table import TableHandler
 
 OUTPUT_DIR = "./output/txt"

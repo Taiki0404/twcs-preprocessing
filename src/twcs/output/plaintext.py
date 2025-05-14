@@ -1,6 +1,6 @@
 from typing import Optional
 
-from ..twcs.table import TableHandler
+from ..table import TableHandler
 from .rules import RuleSet
 
 
