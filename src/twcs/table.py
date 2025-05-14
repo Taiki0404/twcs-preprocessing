@@ -71,6 +71,10 @@ class MetadataTable:
             return None
         return author[0]
 
+    def retrieve_all_tweet_ids_by_author(self, author_id: str) -> list[int]:
+        tweet_ids = self.table.loc[self.table["author_id"] == author_id, "tweet_id"].to_list()
+        return tweet_ids
+
 
 class TextTable:
     def __init__(self, csv_path: str):
