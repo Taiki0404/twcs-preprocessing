@@ -1,11 +1,9 @@
 import argparse
 from pathlib import Path
 
-import pandas as pd
-
 from src.twcs.output.plaintext import PlainTextGenerator
 from src.twcs.output.rules import NumAuthorsRule, RuleSet
-from src.twcs.table import TableHandler
+from src.twcs.table import MetadataTable, SequenceTable, TableHandler, TextTable
 
 OUTPUT_DIR = "./output/txt"
 TEXT_CSV_PATH = "./output/text.csv"
@@ -41,14 +39,14 @@ if __name__ == "__main__":
 
     Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
 
-    df_text = pd.read_csv(TEXT_CSV_PATH)
-    df_meta = pd.read_csv(META_CSV_PATH)
-    df_seq = pd.read_csv(SEQ_CSV_PATH)
+    text_table = TextTable(TEXT_CSV_PATH)
+    meta_table = MetadataTable(META_CSV_PATH)
+    seq_table = SequenceTable(SEQ_CSV_PATH)
 
     rules = RuleSet()
     rules.add(NumAuthorsRule(num_authors=2))
 
-    table_handler = TableHandler(df_text, df_meta, df_seq)
+    table_handler = TableHandler(text_table, meta_table, seq_table)
     ptext_generator = PlainTextGenerator(table_handler, rules)
 
     for dialog_id in read_file_of_dialog_ids(args.input_path):
