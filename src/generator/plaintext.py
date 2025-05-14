@@ -3,7 +3,7 @@ from typing import Optional
 import pandas as pd
 
 from .dialog import Dialog
-from .rules import Rule
+from .rules import RuleSet
 
 
 class TableHandler:
@@ -56,20 +56,14 @@ class TableHandler:
 
 
 class PlainTextGenerator:
-    def __init__(self, table_handler: TableHandler, rules: list[Rule]):
+    def __init__(self, table_handler: TableHandler, rules: RuleSet):
         self.table_handler = table_handler
         self.rules = rules
-
-    def apply_rules(self, dialog: Dialog) -> bool:
-        for rule in self.rules:
-            if not rule.apply(dialog):
-                return False
-        return True
 
     def generate_plain_texts(self, dialog_id: int) -> Optional[list[str]]:
         dialog = self.table_handler.extract_dialog_contents(dialog_id)
 
-        if not self.apply_rules(dialog):
+        if not self.rules.apply_all(dialog):
             return None
 
         return dialog.transform_texts()

@@ -4,7 +4,7 @@ from pathlib import Path
 import pandas as pd
 
 from src.generator.plaintext import PlainTextGenerator, TableHandler
-from src.generator.rules import NumAuthorsRule, Rule
+from src.generator.rules import NumAuthorsRule, RuleSet
 
 OUTPUT_DIR = "./output/txt"
 TEXT_CSV_PATH = "./output/text.csv"
@@ -44,7 +44,8 @@ if __name__ == "__main__":
     df_meta = pd.read_csv(META_CSV_PATH)
     df_pair = pd.read_csv(PAIR_CSV_PATH)
 
-    rules: list[Rule] = [NumAuthorsRule(num_authors=2)]
+    rules = RuleSet()
+    rules.add(NumAuthorsRule(num_authors=2))
 
     table_handler = TableHandler(df_text, df_meta, df_pair)
     ptext_generator = PlainTextGenerator(table_handler, rules)
