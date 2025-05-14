@@ -100,6 +100,8 @@ class SequenceTable:
 
         return df_dialog["utterance_id"].tolist()
 
+    def retrieve_dialog_ids_by_tweet_id(self, tweet_id: int) -> list[int]:
+        return self.table.loc[self.table["utterance_id"] == tweet_id, "dialog_id"].to_list()
 
 class TableHandler:
     def __init__(
