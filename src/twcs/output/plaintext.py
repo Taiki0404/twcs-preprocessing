@@ -10,4 +10,4 @@ class PlainTextGenerator:
     def generate_plain_texts(self, dialog_id: int) -> Optional[list[str]]:
         dialog = self.table_handler.extract_dialog_contents(dialog_id)
 
-        return dialog.transform_texts()
+        return dialog.join_continuous_texts_by_same_author()
