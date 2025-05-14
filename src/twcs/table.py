@@ -1,3 +1,4 @@
+import re
 from typing import Optional
 
 import pandas as pd
@@ -44,45 +45,75 @@ class TableGenerator:
         seq_table.to_csv(f"{output_dir}/seq.csv", index=False)
 
 
-class TableHandler:
-    def __init__(
-        self, text_table: pd.DataFrame, metadata_table: pd.DataFrame, seq_table: pd.DataFrame
-    ):
-        self.text_table = text_table
-        self.metadata_table = metadata_table
-        self.seq_table = seq_table
+class MetadataTable:
+    def __init__(self, csv_path: str):
+        self.csv = csv_path
+        self.table = pd.read_csv(csv_path)
 
-    def retrieve_tweet_ids_of_dialog_sequence(self, dialog_id: int) -> list:
-        df_dialog = self.seq_table[self.seq_table["dialog_id"] == dialog_id]
-        df_dialog = df_dialog.sort_values(by="sequence")
+        self.company_authors = self.retrieve_company_authors()
 
-        return df_dialog["utterance_id"].tolist()
+    def retrieve_company_authors(self) -> list[str]:
+        all_authors = self.table["author_id"].unique()
 
-    def retrieve_text_by_tweet_id(self, tweet_id: int) -> Optional[str]:
-        text = self.text_table.loc[self.text_table["tweet_id"] == tweet_id, "processed_text"].values
+        reject_pattern = re.compile(r"[0-9]+")
+        company_authors = []
+        for author in all_authors:
+            if reject_pattern.match(author):
+                continue
+            company_authors.append(author)
 
-        if text.size == 0:
-            return None
-        return text[0]
+        return company_authors
 
     def retrieve_author_by_tweet_id(self, tweet_id: int) -> Optional[str]:
-        author = self.metadata_table.loc[
-            self.metadata_table["tweet_id"] == tweet_id, "author_id"
-        ].values
+        author = self.table.loc[self.table["tweet_id"] == tweet_id, "author_id"].values
 
         if author.size == 0:
             return None
         return author[0]
 
+
+class TextTable:
+    def __init__(self, csv_path: str):
+        self.csv = csv_path
+        self.table = pd.read_csv(csv_path)
+
+    def retrieve_text_by_tweet_id(self, tweet_id: int) -> Optional[str]:
+        text = self.table.loc[self.table["tweet_id"] == tweet_id, "processed_text"].values
+
+        if text.size == 0:
+            return None
+        return text[0]
+
+
+class SequenceTable:
+    def __init__(self, csv_path: str):
+        self.csv = csv_path
+        self.table = pd.read_csv(csv_path)
+
+    def retrieve_tweet_ids_of_dialog_sequence(self, dialog_id: int) -> list[int]:
+        df_dialog = self.table[self.table["dialog_id"] == dialog_id]
+        df_dialog = df_dialog.sort_values(by="sequence")
+
+        return df_dialog["utterance_id"].tolist()
+
+
+class TableHandler:
+    def __init__(
+        self, text_table: TextTable, metadata_table: MetadataTable, seq_table: SequenceTable
+    ):
+        self.text_table = text_table
+        self.metadata_table = metadata_table
+        self.seq_table = seq_table
+
     def extract_dialog_contents(self, dialog_id: int) -> Dialog:
-        tweet_ids = self.retrieve_tweet_ids_of_dialog_sequence(dialog_id)
+        tweet_ids = self.seq_table.retrieve_tweet_ids_of_dialog_sequence(dialog_id)
 
         authors = []
         texts = []
 
         for _id in tweet_ids:
-            author = self.retrieve_author_by_tweet_id(_id)
-            text = self.retrieve_text_by_tweet_id(_id)
+            author = self.metadata_table.retrieve_author_by_tweet_id(_id)
+            text = self.text_table.retrieve_text_by_tweet_id(_id)
 
             if author is None or text is None:
                 continue
