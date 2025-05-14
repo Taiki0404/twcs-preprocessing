@@ -1,7 +1,7 @@
 import argparse
 from pathlib import Path
 
-from src.twcs.table_generator import TableGenerator
+from src.twcs.table import TableGenerator
 from src.twcs.twcs import TWCS
 
 OUTPUT_DIR = "output"
