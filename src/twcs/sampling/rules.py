@@ -1,4 +1,5 @@
 from abc import ABCMeta, abstractmethod
+from typing import Optional
 
 from ..dialog import Dialog
 
@@ -10,8 +11,11 @@ class Rule(metaclass=ABCMeta):
 
 
 class RuleSet:
-    def __init__(self, rules: list[Rule] = []):
-        self.rules = rules
+    def __init__(self, rules: Optional[list[Rule]] = None):
+        if rules is None:
+            self.rules = []
+        else:
+            self.rules = rules
 
     def apply_all(self, dialog: Dialog) -> bool:
         return all(rule.apply(dialog) for rule in self.rules)
