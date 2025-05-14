@@ -134,3 +134,9 @@ class TableHandler:
             texts.append(text)
 
         return Dialog(authors, texts)
+
+    def retrieve_all_tweet_ids_by_author(self, author_id: str) -> list[int]:
+        return self.metadata_table.retrieve_all_tweet_ids_by_author(author_id)
+
+    def retrieve_dialog_ids_by_tweet_ids(self, tweet_ids: list[int]) -> list[int]:
+        return self.seq_table.retrieve_dialog_ids_by_tweet_ids(tweet_ids)
