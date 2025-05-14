@@ -1,6 +1,6 @@
 from abc import ABCMeta, abstractmethod
 
-from src.generator.dialog import Dialog
+from .dialog import Dialog
 
 
 class Rule(metaclass=ABCMeta):
