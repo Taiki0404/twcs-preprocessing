@@ -10,7 +10,7 @@ OUTPUT_DIR = "output"
 def setup_parser():
     parser = argparse.ArgumentParser(description="TWCS file processing script")
     parser.add_argument(
-        "--twcs_path",
+        "--twcs-path",
         type=str,
         required=True,
         help="Path to the TWCS file",
