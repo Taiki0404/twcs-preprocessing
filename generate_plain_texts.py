@@ -10,7 +10,7 @@ from src.twcs.table import TableHandler
 OUTPUT_DIR = "./output/txt"
 TEXT_CSV_PATH = "./output/text.csv"
 META_CSV_PATH = "./output/metadata.csv"
-PAIR_CSV_PATH = "./output/pair.csv"
+SEQ_CSV_PATH = "./output/seq.csv"
 
 
 def read_file_of_dialog_ids(path: str) -> list[int]:
@@ -43,12 +43,12 @@ if __name__ == "__main__":
 
     df_text = pd.read_csv(TEXT_CSV_PATH)
     df_meta = pd.read_csv(META_CSV_PATH)
-    df_pair = pd.read_csv(PAIR_CSV_PATH)
+    df_seq = pd.read_csv(SEQ_CSV_PATH)
 
     rules = RuleSet()
     rules.add(NumAuthorsRule(num_authors=2))
 
-    table_handler = TableHandler(df_text, df_meta, df_pair)
+    table_handler = TableHandler(df_text, df_meta, df_seq)
     ptext_generator = PlainTextGenerator(table_handler, rules)
 
     for dialog_id in read_file_of_dialog_ids(args.input_path):

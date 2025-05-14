@@ -22,7 +22,7 @@ class TableGenerator:
 
         return pd.DataFrame(records, columns=columns["for_text_table"])
 
-    def generate_pair_table(self) -> pd.DataFrame:
+    def generate_seq_table(self) -> pd.DataFrame:
         dialog_branches = self.twcs.extract_dialog_branches()
 
         records = []
@@ -32,28 +32,28 @@ class TableGenerator:
 
                 records.append([utterance_id, seq, dialog_id])
 
-        return pd.DataFrame(records, columns=columns["for_pair_table"])
+        return pd.DataFrame(records, columns=columns["for_seq_table"])
 
     def generate_tables_as_csv(self, output_dir: str):
         metadata_table = self.generate_metadata_table()
         text_table = self.generate_text_table()
-        pair_table = self.generate_pair_table()
+        seq_table = self.generate_seq_table()
 
         metadata_table.to_csv(f"{output_dir}/metadata.csv", index=False)
         text_table.to_csv(f"{output_dir}/text.csv", index=False)
-        pair_table.to_csv(f"{output_dir}/pair.csv", index=False)
+        seq_table.to_csv(f"{output_dir}/seq.csv", index=False)
 
 
 class TableHandler:
     def __init__(
-        self, text_table: pd.DataFrame, metadata_table: pd.DataFrame, pair_table: pd.DataFrame
+        self, text_table: pd.DataFrame, metadata_table: pd.DataFrame, seq_table: pd.DataFrame
     ):
         self.text_table = text_table
         self.metadata_table = metadata_table
-        self.pair_table = pair_table
+        self.seq_table = seq_table
 
     def retrieve_tweet_ids_of_dialog_sequence(self, dialog_id: int) -> list:
-        df_dialog = self.pair_table[self.pair_table["dialog_id"] == dialog_id]
+        df_dialog = self.seq_table[self.seq_table["dialog_id"] == dialog_id]
         df_dialog = df_dialog.sort_values(by="sequence")
 
         return df_dialog["utterance_id"].tolist()
