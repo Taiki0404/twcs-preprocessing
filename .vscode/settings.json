@@ -7,7 +7,7 @@
         },
         "editor.defaultFormatter": "charliermarsh.ruff"
     },
-    "editor.rulers": [80],
+    // "editor.rulers": [80],
     "python.testing.pytestArgs": [
         "test"
     ],
