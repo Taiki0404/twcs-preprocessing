@@ -2,8 +2,8 @@ import argparse
 from pathlib import Path
 
 from src.twcs.output.plaintext import PlainTextGenerator
-from src.twcs.output.rules import NumAuthorsRule, RuleSet
-from src.twcs.table import MetadataTable, SequenceTable, TableHandler, TextTable
+from src.twcs.sampling.rules import NumAuthorsRule, RuleSet
+from src.twcs.table import TableHandler
 
 OUTPUT_DIR = "./output/txt"
 TEXT_CSV_PATH = "./output/text.csv"
@@ -39,15 +39,11 @@ if __name__ == "__main__":
 
     Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
 
-    text_table = TextTable(TEXT_CSV_PATH)
-    meta_table = MetadataTable(META_CSV_PATH)
-    seq_table = SequenceTable(SEQ_CSV_PATH)
-
     rules = RuleSet()
     rules.add(NumAuthorsRule(num_authors=2))
 
-    table_handler = TableHandler(text_table, meta_table, seq_table)
-    ptext_generator = PlainTextGenerator(table_handler, rules)
+    table_handler = TableHandler(TEXT_CSV_PATH, META_CSV_PATH, SEQ_CSV_PATH)
+    ptext_generator = PlainTextGenerator(table_handler)
 
     for dialog_id in read_file_of_dialog_ids(args.input_path):
         plain_text = ptext_generator.generate_plain_texts(dialog_id)
