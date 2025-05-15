@@ -142,6 +142,9 @@ class DialogMetaTable:
     def retrieve_n_authors_by_dialog_id(self, dialog_id: int) -> int:
         return self.table.loc[self.table["dialog_id"] == dialog_id, "n_authors"].values[0]
 
+    def retrieve_dialog_ids_by_author_id(self, author_id: str) -> list[int]:
+        return self.table.loc[self.table["supporter"] == author_id, "dialog_id"].to_list()
+
 
 class TextTable:
     def __init__(self, csv_path: str):
@@ -210,3 +213,6 @@ class TableHandler:
 
     def retrieve_dialog_ids_by_tweet_ids(self, tweet_ids: list[int]) -> list[int]:
         return self.seq_table.retrieve_dialog_ids_by_tweet_ids(tweet_ids)
+
+    def retrieve_dialog_ids_by_author_id(self, author_id: str) -> list[int]:
+        return self.dialog_meta_table.retrieve_dialog_ids_by_author_id(author_id)
