@@ -19,27 +19,29 @@ class TableGenerator:
     def generate_dialog_meta_table(
         self, seq_table: pd.DataFrame, tweet_meta_table: pd.DataFrame
     ) -> pd.DataFrame:
-        dialog_ids = seq_table["dialog_id"].unique()
+        df_merged = seq_table[["dialog_id", "utterance_id"]].merge(
+            tweet_meta_table[["tweet_id", "author_id"]],
+            left_on="utterance_id",
+            right_on="tweet_id",
+            how="left",
+        )
+        # for文を使わずに、dialog_idごとにauthor_idをリスト化するための書き方
+        df_grouped = df_merged.groupby("dialog_id")["author_id"].unique().reset_index()
+
         supporter_pattern = re.compile(r"[^0-9]+")
 
-        records = []
-        for _id in dialog_ids:
-            tweet_ids = seq_table.loc[seq_table["dialog_id"] == _id, "utterance_id"].to_list()
-            authors = (
-                tweet_meta_table.loc[tweet_meta_table["tweet_id"].isin(tweet_ids), "author_id"]
-                .unique()
-                .tolist()
-            )
-            supporters = [ath for ath in authors if supporter_pattern.match(ath)]
+        def find_supporter(authors):
+            supporters = [
+                ath for ath in authors if isinstance(ath, str) and supporter_pattern.match(ath)
+            ]
+            return supporters[0] if len(supporters) == 1 else None
 
-            if len(supporters) != 1:
-                supporter = None
-            else:
-                supporter = supporters[0]
+        df_grouped["supporter"] = df_grouped["author_id"].apply(find_supporter)
 
-            records.append([_id, supporter])
+        df_grouped.drop(columns=["author_id"], inplace=True)
+        df_grouped.columns = columns["for_dialog_meta_table"]
 
-        return pd.DataFrame(records, columns=columns["for_dialog_meta_table"])
+        return df_grouped
 
     def generate_text_table(self) -> pd.DataFrame:
         tweet_ids = self.twcs.extract_tweet_ids()
