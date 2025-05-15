@@ -29,7 +29,7 @@ class NumAuthorsRule(Rule):
         self.num_authors = num_authors
 
     def apply(self, dialog: Dialog) -> bool:
-        return len(set(dialog.authors)) == self.num_authors
+        return len(set(dialog.authors_seq)) == self.num_authors
 
 
 class SequenceLengthRule(Rule):
