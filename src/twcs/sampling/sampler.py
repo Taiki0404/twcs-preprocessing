@@ -12,8 +12,7 @@ class Sampler:
         if author_id not in self.table_handler.tweet_meta_table.company_authors:
             raise ValueError(f"Author ID {author_id} not found in tweet meta table.")
 
-        tweet_ids = self.table_handler.retrieve_all_tweet_ids_by_author(author_id)
-        dialog_ids = self.table_handler.retrieve_dialog_ids_by_tweet_ids(tweet_ids)
+        dialog_ids = self.table_handler.retrieve_dialog_ids_by_author_id(author_id)
 
         dialog_ids_to_use = []
         for dialog_id in dialog_ids:
