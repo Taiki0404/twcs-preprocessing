@@ -63,16 +63,37 @@ class TableGenerator:
 
         return pd.DataFrame(records, columns=columns["for_seq_table"])
 
-    def generate_tables_as_csv(self, output_dir: str):
+    def generate_tweet_meta_table_as_csv(self, output_dir: str) -> pd.DataFrame:
         tweet_meta_table = self.generate_tweet_meta_table()
-        text_table = self.generate_text_table()
-        seq_table = self.generate_seq_table()
-        dialog_meta_table = self.generate_dialog_meta_table(seq_table, tweet_meta_table)
-
         tweet_meta_table.to_csv(f"{output_dir}/tweet_meta.csv", index=False)
-        dialog_meta_table.to_csv(f"{output_dir}/dialog_meta.csv", index=False)
+
+        return tweet_meta_table
+
+    def generate_text_table_as_csv(self, output_dir: str) -> pd.DataFrame:
+        text_table = self.generate_text_table()
         text_table.to_csv(f"{output_dir}/text.csv", index=False)
+
+        return text_table
+
+    def generate_seq_table_as_csv(self, output_dir: str) -> pd.DataFrame:
+        seq_table = self.generate_seq_table()
         seq_table.to_csv(f"{output_dir}/seq.csv", index=False)
+
+        return seq_table
+
+    def generate_dialog_meta_table_as_csv(
+        self, output_dir: str, seq_table: pd.DataFrame, tweet_meta_table: pd.DataFrame
+    ) -> pd.DataFrame:
+        dialog_meta_table = self.generate_dialog_meta_table(seq_table, tweet_meta_table)
+        dialog_meta_table.to_csv(f"{output_dir}/dialog_meta.csv", index=False)
+
+        return dialog_meta_table
+
+    def generate_tables_as_csv(self, output_dir: str):
+        self.generate_text_table_as_csv(output_dir)
+        tweet_meta = self.generate_tweet_meta_table_as_csv(output_dir)
+        seq = self.generate_seq_table_as_csv(output_dir)
+        self.generate_dialog_meta_table_as_csv(output_dir, seq, tweet_meta)
 
 
 class TweetMetaTable:
