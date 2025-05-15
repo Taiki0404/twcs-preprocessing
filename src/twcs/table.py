@@ -15,7 +15,6 @@ class TableGenerator:
     def generate_tweet_meta_table(self) -> pd.DataFrame:
         return self.twcs.retrieve_tweet_meta()
 
-    # TODO: 対話メタテーブルの生成メソッド
     def generate_dialog_meta_table(
         self, seq_table: pd.DataFrame, tweet_meta_table: pd.DataFrame
     ) -> pd.DataFrame:
@@ -68,11 +67,9 @@ class TableGenerator:
         tweet_meta_table = self.generate_tweet_meta_table()
         text_table = self.generate_text_table()
         seq_table = self.generate_seq_table()
-        # TODO: 対話メタテーブルの生成
         dialog_meta_table = self.generate_dialog_meta_table(seq_table, tweet_meta_table)
 
         tweet_meta_table.to_csv(f"{output_dir}/tweet_meta.csv", index=False)
-        # TODO: 対話メタテーブルの保存
         dialog_meta_table.to_csv(f"{output_dir}/dialog_meta.csv", index=False)
         text_table.to_csv(f"{output_dir}/text.csv", index=False)
         seq_table.to_csv(f"{output_dir}/seq.csv", index=False)
