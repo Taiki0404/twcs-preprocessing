@@ -187,11 +187,11 @@ class TableHandler:
 
     def extract_dialog_contents(self, dialog_id: int) -> Dialog:
         tweet_ids = self.seq_table.retrieve_tweet_ids_of_dialog_sequence(dialog_id)
-        # TODO: 対話メタテーブルからサポーターを取得
-        # supporter = self.dialog_meta_table.retrieve_supporter_by_dialog_id(dialog_id)
+        supporter = self.dialog_meta_table.retrieve_supporter_by_dialog_id(dialog_id)
+        n_authors = self.dialog_meta_table.retrieve_n_authors_by_dialog_id(dialog_id)
 
-        authors = []
-        texts = []
+        authors_seq = []
+        texts_seq = []
 
         for _id in tweet_ids:
             author = self.tweet_meta_table.retrieve_author_by_tweet_id(_id)
@@ -200,11 +200,10 @@ class TableHandler:
             if author is None or text is None:
                 continue
 
-            authors.append(author)
-            texts.append(text)
+            authors_seq.append(author)
+            texts_seq.append(text)
 
-        # TODO: サポーターをDialogに追加
-        return Dialog(authors, texts)  # , supporter)
+        return Dialog(authors_seq, texts_seq, supporter, n_authors)
 
     def retrieve_all_tweet_ids_by_author(self, author_id: str) -> list[int]:
         return self.tweet_meta_table.retrieve_all_tweet_ids_by_author(author_id)
