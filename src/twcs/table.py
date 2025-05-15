@@ -132,9 +132,12 @@ class DialogMetaTable:
         self.csv = csv_path
         self.table = pd.read_csv(csv_path)
 
-    # TODO: 対話IDからサポーターを取得するメソッド
     def retrieve_supporter_by_dialog_id(self, dialog_id: int) -> Optional[str]:
-        pass
+        supporter = self.table.loc[self.table["dialog_id"] == dialog_id, "supporter"].values[0]
+
+        if not isinstance(supporter, str):
+            return None
+        return supporter
 
 
 class TextTable:
