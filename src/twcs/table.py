@@ -15,6 +15,12 @@ class TableGenerator:
     def generate_tweet_meta_table(self) -> pd.DataFrame:
         return self.twcs.retrieve_tweet_meta()
 
+    # TODO: 対話メタテーブルの生成メソッド
+    def generate_dialog_meta_table(
+        self, seq_table: pd.DataFrame, tweet_meta_table: pd.DataFrame
+    ) -> pd.DataFrame:
+        pass
+
     def generate_text_table(self) -> pd.DataFrame:
         tweet_ids = self.twcs.extract_tweet_ids()
         processed_texts = self.twcs.extract_processed_text()
@@ -39,8 +45,12 @@ class TableGenerator:
         tweet_meta_table = self.generate_tweet_meta_table()
         text_table = self.generate_text_table()
         seq_table = self.generate_seq_table()
+        # TODO: 対話メタテーブルの生成
+        # dialog_meta_table = self.generate_dialog_meta_table(seq_table, tweet_meta_table)
 
         tweet_meta_table.to_csv(f"{output_dir}/tweet_meta.csv", index=False)
+        # TODO: 対話メタテーブルの保存
+        # dialog_meta_table.to_csv(f"{output_dir}/dialog_meta.csv", index=False)
         text_table.to_csv(f"{output_dir}/text.csv", index=False)
         seq_table.to_csv(f"{output_dir}/seq.csv", index=False)
 
@@ -74,6 +84,16 @@ class TweetMetaTable:
     def retrieve_all_tweet_ids_by_author(self, author_id: str) -> list[int]:
         tweet_ids = self.table.loc[self.table["author_id"] == author_id, "tweet_id"].to_list()
         return tweet_ids
+
+
+class DialogMetaTable:
+    def __init__(self, csv_path: str):
+        self.csv = csv_path
+        self.table = pd.read_csv(csv_path)
+
+    # TODO: 対話IDからサポーターを取得するメソッド
+    def retrieve_supporter_by_dialog_id(self, dialog_id: int) -> Optional[str]:
+        pass
 
 
 class TextTable:
@@ -115,10 +135,14 @@ class TableHandler:
     def __init__(self, text_path: str, tweet_meta_path: str, seq_path: str):
         self.text_table = TextTable(text_path)
         self.tweet_meta_table = TweetMetaTable(tweet_meta_path)
+        # TODO: 対話メタテーブルの読み込み
+        # self.dialog_meta_table = DialogMetaTable(dialog_meta_path)
         self.seq_table = SequenceTable(seq_path)
 
     def extract_dialog_contents(self, dialog_id: int) -> Dialog:
         tweet_ids = self.seq_table.retrieve_tweet_ids_of_dialog_sequence(dialog_id)
+        # TODO: 対話メタテーブルからサポーターを取得
+        # supporter = self.dialog_meta_table.retrieve_supporter_by_dialog_id(dialog_id)
 
         authors = []
         texts = []
@@ -133,7 +157,8 @@ class TableHandler:
             authors.append(author)
             texts.append(text)
 
-        return Dialog(authors, texts)
+        # TODO: サポーターをDialogに追加
+        return Dialog(authors, texts)  # , supporter)
 
     def retrieve_all_tweet_ids_by_author(self, author_id: str) -> list[int]:
         return self.tweet_meta_table.retrieve_all_tweet_ids_by_author(author_id)

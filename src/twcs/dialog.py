@@ -1,4 +1,5 @@
 class Dialog:
+    # TODO: add supporter
     def __init__(self, authors: list[str], texts: list[str]):
         self.authors = authors
         self.texts = texts
