@@ -7,7 +7,7 @@ from src.twcs.table import TableHandler
 
 OUTPUT_DIR = "./output/txt"
 TEXT_CSV_PATH = "./output/text.csv"
-META_CSV_PATH = "./output/metadata.csv"
+TWEET_META_CSV_PATH = "./output/tweet_meta.csv"
 SEQ_CSV_PATH = "./output/seq.csv"
 
 
@@ -42,7 +42,7 @@ if __name__ == "__main__":
     rules = RuleSet()
     rules.add(NumAuthorsRule(num_authors=2))
 
-    table_handler = TableHandler(TEXT_CSV_PATH, META_CSV_PATH, SEQ_CSV_PATH)
+    table_handler = TableHandler(TEXT_CSV_PATH, TWEET_META_CSV_PATH, SEQ_CSV_PATH)
     ptext_generator = PlainTextGenerator(table_handler)
 
     for dialog_id in read_file_of_dialog_ids(args.input_path):

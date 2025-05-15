@@ -18,8 +18,8 @@ class TWCS:
         self.extractor = TwcsDialogExtractor()
         self.preprocessor = TextPreprocessingPipeline()
 
-    def retrieve_metadata(self) -> pd.DataFrame:
-        return self.twcs[self.columns_config["for_meta_table"]]
+    def retrieve_tweet_meta(self) -> pd.DataFrame:
+        return self.twcs[self.columns_config["for_tweet_meta_table"]]
 
     def extract_tweet_ids(self) -> list[int]:
         return self.twcs["tweet_id"].tolist()
