@@ -139,6 +139,9 @@ class DialogMetaTable:
             return None
         return supporter
 
+    def retrieve_n_authors_by_dialog_id(self, dialog_id: int) -> int:
+        return self.table.loc[self.table["dialog_id"] == dialog_id, "n_authors"].values[0]
+
 
 class TextTable:
     def __init__(self, csv_path: str):
