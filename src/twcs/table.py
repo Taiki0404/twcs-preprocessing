@@ -176,11 +176,11 @@ class SequenceTable:
 
 
 class TableHandler:
-    def __init__(self, text_path: str, tweet_meta_path: str, seq_path: str):
-        self.text_table = TextTable(text_path)
+    def __init__(self, tweet_meta_path: str, text_path: str, seq_path: str):
         self.tweet_meta_table = TweetMetaTable(tweet_meta_path)
         # TODO: 対話メタテーブルの読み込み
         # self.dialog_meta_table = DialogMetaTable(dialog_meta_path)
+        self.text_table = TextTable(text_path)
         self.seq_table = SequenceTable(seq_path)
 
     def extract_dialog_contents(self, dialog_id: int) -> Dialog:
