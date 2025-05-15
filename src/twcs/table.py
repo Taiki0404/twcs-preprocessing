@@ -19,7 +19,27 @@ class TableGenerator:
     def generate_dialog_meta_table(
         self, seq_table: pd.DataFrame, tweet_meta_table: pd.DataFrame
     ) -> pd.DataFrame:
-        pass
+        dialog_ids = seq_table["dialog_id"].unique()
+        supporter_pattern = re.compile(r"[^0-9]+")
+
+        records = []
+        for _id in dialog_ids:
+            tweet_ids = seq_table.loc[seq_table["dialog_id"] == _id, "utterance_id"].to_list()
+            authors = (
+                tweet_meta_table.loc[tweet_meta_table["tweet_id"].isin(tweet_ids), "author_id"]
+                .unique()
+                .tolist()
+            )
+            supporters = [ath for ath in authors if supporter_pattern.match(ath)]
+
+            if len(supporters) != 1:
+                supporter = None
+            else:
+                supporter = supporters[0]
+
+            records.append([_id, supporter])
+
+        return pd.DataFrame(records, columns=columns["for_dialog_meta_table"])
 
     def generate_text_table(self) -> pd.DataFrame:
         tweet_ids = self.twcs.extract_tweet_ids()
@@ -46,11 +66,11 @@ class TableGenerator:
         text_table = self.generate_text_table()
         seq_table = self.generate_seq_table()
         # TODO: 対話メタテーブルの生成
-        # dialog_meta_table = self.generate_dialog_meta_table(seq_table, tweet_meta_table)
+        dialog_meta_table = self.generate_dialog_meta_table(seq_table, tweet_meta_table)
 
         tweet_meta_table.to_csv(f"{output_dir}/tweet_meta.csv", index=False)
         # TODO: 対話メタテーブルの保存
-        # dialog_meta_table.to_csv(f"{output_dir}/dialog_meta.csv", index=False)
+        dialog_meta_table.to_csv(f"{output_dir}/dialog_meta.csv", index=False)
         text_table.to_csv(f"{output_dir}/text.csv", index=False)
         seq_table.to_csv(f"{output_dir}/seq.csv", index=False)
 
