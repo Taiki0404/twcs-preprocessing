@@ -37,6 +37,7 @@ class TableGenerator:
             return supporters[0] if len(supporters) == 1 else None
 
         df_grouped["supporter"] = df_grouped["author_id"].apply(find_supporter)
+        df_grouped["n_authors"] = df_grouped["author_id"].apply(len)
 
         df_grouped.drop(columns=["author_id"], inplace=True)
         df_grouped.columns = columns["for_dialog_meta_table"]
