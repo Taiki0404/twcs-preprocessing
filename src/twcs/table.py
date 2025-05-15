@@ -12,8 +12,8 @@ class TableGenerator:
     def __init__(self, twcs: TWCS):
         self.twcs = twcs
 
-    def generate_metadata_table(self) -> pd.DataFrame:
-        return self.twcs.retrieve_metadata()
+    def generate_tweet_meta_table(self) -> pd.DataFrame:
+        return self.twcs.retrieve_tweet_meta()
 
     def generate_text_table(self) -> pd.DataFrame:
         tweet_ids = self.twcs.extract_tweet_ids()
@@ -36,16 +36,16 @@ class TableGenerator:
         return pd.DataFrame(records, columns=columns["for_seq_table"])
 
     def generate_tables_as_csv(self, output_dir: str):
-        metadata_table = self.generate_metadata_table()
+        tweet_meta_table = self.generate_tweet_meta_table()
         text_table = self.generate_text_table()
         seq_table = self.generate_seq_table()
 
-        metadata_table.to_csv(f"{output_dir}/metadata.csv", index=False)
+        tweet_meta_table.to_csv(f"{output_dir}/tweet_meta.csv", index=False)
         text_table.to_csv(f"{output_dir}/text.csv", index=False)
         seq_table.to_csv(f"{output_dir}/seq.csv", index=False)
 
 
-class MetadataTable:
+class TweetMetaTable:
     def __init__(self, csv_path: str):
         self.csv = csv_path
         self.table = pd.read_csv(csv_path)
@@ -112,9 +112,9 @@ class SequenceTable:
 
 
 class TableHandler:
-    def __init__(self, text_path: str, meta_path: str, seq_path: str):
+    def __init__(self, text_path: str, tweet_meta_path: str, seq_path: str):
         self.text_table = TextTable(text_path)
-        self.metadata_table = MetadataTable(meta_path)
+        self.tweet_meta_table = TweetMetaTable(tweet_meta_path)
         self.seq_table = SequenceTable(seq_path)
 
     def extract_dialog_contents(self, dialog_id: int) -> Dialog:
@@ -124,7 +124,7 @@ class TableHandler:
         texts = []
 
         for _id in tweet_ids:
-            author = self.metadata_table.retrieve_author_by_tweet_id(_id)
+            author = self.tweet_meta_table.retrieve_author_by_tweet_id(_id)
             text = self.text_table.retrieve_text_by_tweet_id(_id)
 
             if author is None or text is None:
@@ -136,7 +136,7 @@ class TableHandler:
         return Dialog(authors, texts)
 
     def retrieve_all_tweet_ids_by_author(self, author_id: str) -> list[int]:
-        return self.metadata_table.retrieve_all_tweet_ids_by_author(author_id)
+        return self.tweet_meta_table.retrieve_all_tweet_ids_by_author(author_id)
 
     def retrieve_dialog_ids_by_tweet_ids(self, tweet_ids: list[int]) -> list[int]:
         return self.seq_table.retrieve_dialog_ids_by_tweet_ids(tweet_ids)
