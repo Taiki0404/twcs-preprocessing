@@ -2,7 +2,6 @@ import argparse
 from pathlib import Path
 
 from src.twcs.output.plaintext import PlainTextGenerator
-from src.twcs.sampling.rules import NumAuthorsRule, RuleSet
 from src.twcs.table import TableHandler
 
 OUTPUT_DIR = "./output/txt"
@@ -39,9 +38,6 @@ if __name__ == "__main__":
     args = argparse_args()
 
     Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
-
-    rules = RuleSet()
-    rules.add(NumAuthorsRule(num_authors=2))
 
     table_handler = TableHandler(
         TWEET_META_CSV_PATH, DIALOT_META_CSV_PATH, TEXT_CSV_PATH, SEQ_CSV_PATH
