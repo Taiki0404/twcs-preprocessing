@@ -8,7 +8,9 @@ class Sampler:
     def __init__(self, table_handler: TableHandler):
         self.table_handler = table_handler
 
-    def sample_by_author(self, author_id: str, n_samples: int, rules: RuleSet) -> list[int]:
+    def sample_dialog_id_by_author(
+        self, author_id: str, n_samples: int, rules: RuleSet
+    ) -> list[int]:
         if author_id not in self.table_handler.tweet_meta_table.company_authors:
             raise ValueError(f"Author ID {author_id} not found in tweet meta table.")
 
