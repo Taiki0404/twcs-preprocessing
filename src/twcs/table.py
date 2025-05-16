@@ -193,8 +193,6 @@ class TableHandler:
 
     def extract_dialog_contents(self, dialog_id: int) -> Dialog:
         tweet_ids = self.seq_table.retrieve_tweet_ids_of_dialog_sequence(dialog_id)
-        supporter = self.dialog_meta_table.retrieve_supporter_by_dialog_id(dialog_id)
-        n_authors = self.dialog_meta_table.retrieve_n_authors_by_dialog_id(dialog_id)
 
         authors_seq = []
         texts_seq = []
@@ -209,7 +207,7 @@ class TableHandler:
             authors_seq.append(author)
             texts_seq.append(text)
 
-        return Dialog(authors_seq, texts_seq, supporter, n_authors)
+        return Dialog(authors_seq, texts_seq)
 
     def retrieve_dialog_ids_by_author_id_with_rules(
         self,
