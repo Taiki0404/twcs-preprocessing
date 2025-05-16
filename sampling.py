@@ -1,7 +1,7 @@
 import argparse
 from pathlib import Path
 
-from src.twcs.sampling.rules import NumAuthorsRule, RuleSet, SequenceLengthRule
+from src.twcs.rules import SequenceLength
 from src.twcs.sampling.sampler import Sampler
 from src.twcs.table import TableHandler
 
@@ -39,12 +39,10 @@ if __name__ == "__main__":
     )
     sampler = Sampler(table_handler)
 
-    rules = RuleSet()
-    rules.add(NumAuthorsRule(num_authors=2))
-    rules.add(SequenceLengthRule(min_length=2, max_length=6))
+    seq_len = SequenceLength(min=2, max=6)
 
     samples = sampler.sample_dialog_id_by_author(
-        author_id=args.company, n_samples=args.n_samples, rules=rules
+        author_id=args.company, n_samples=args.n_samples, n_authors=2, seq_len=seq_len
     )
     sorted_samples = sorted(samples)
 

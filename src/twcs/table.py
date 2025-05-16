@@ -5,6 +5,7 @@ import pandas as pd
 
 from .config import columns
 from .dialog import Dialog
+from .rules import SequenceLength
 from .twcs import TWCS
 
 
@@ -146,8 +147,16 @@ class DialogMetaTable:
     def retrieve_n_authors_by_dialog_id(self, dialog_id: int) -> int:
         return self.table.loc[self.table["dialog_id"] == dialog_id, "n_authors"].values[0]
 
-    def retrieve_dialog_ids_by_author_id(self, author_id: str) -> list[int]:
-        return self.table.loc[self.table["supporter"] == author_id, "dialog_id"].to_list()
+    def retrieve_dialog_ids_by_author_with_rules(
+        self, author_id: str, n_authors: int, seq_len: SequenceLength
+    ) -> list[int]:
+        df = self.table[
+            (self.table["supporter"] == author_id)
+            & (self.table["n_authors"] == n_authors)
+            & (self.table["length"].between(seq_len.min, seq_len.max))
+        ]
+
+        return df["dialog_id"].tolist()
 
 
 class TextTable:
@@ -202,8 +211,15 @@ class TableHandler:
 
         return Dialog(authors_seq, texts_seq, supporter, n_authors)
 
-    def retrieve_dialog_ids_by_author_id(self, author_id: str) -> list[int]:
-        return self.dialog_meta_table.retrieve_dialog_ids_by_author_id(author_id)
+    def retrieve_dialog_ids_by_author_id_with_rules(
+        self,
+        author_id: str,
+        n_authors: int,
+        seq_len: SequenceLength,
+    ) -> list[int]:
+        return self.dialog_meta_table.retrieve_dialog_ids_by_author_with_rules(
+            author_id=author_id, n_authors=n_authors, seq_len=seq_len
+        )
 
     def include_company_authors(self, author_id: str) -> bool:
         return self.tweet_meta_table.include_company_authors(author_id)
