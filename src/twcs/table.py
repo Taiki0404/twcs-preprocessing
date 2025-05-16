@@ -24,9 +24,13 @@ class TableGenerator:
             right_on="tweet_id",
             how="left",
         )
+
+        dialog_lengths = (
+            df_merged.groupby("dialog_id")["utterance_id"].count().reset_index(name="lengths")
+        )
+
         # for文を使わずに、dialog_idごとにauthor_idをリスト化するための書き方
         df_grouped = df_merged.groupby("dialog_id")["author_id"].unique().reset_index()
-
         supporter_pattern = re.compile(r"[^0-9]+")
 
         def find_supporter(authors):
@@ -37,8 +41,9 @@ class TableGenerator:
 
         df_grouped["supporter"] = df_grouped["author_id"].apply(find_supporter)
         df_grouped["n_authors"] = df_grouped["author_id"].apply(len)
-
+        df_grouped = df_grouped.merge(dialog_lengths, on="dialog_id", how="left")
         df_grouped.drop(columns=["author_id"], inplace=True)
+
         df_grouped.columns = columns["for_dialog_meta_table"]
 
         return df_grouped
