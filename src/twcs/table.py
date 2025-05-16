@@ -152,9 +152,9 @@ class TextTable:
         self.table = pd.read_csv(csv_path)
 
     def retrieve_text_by_tweet_id(self, tweet_id: int) -> Optional[str]:
-        text = self.table.loc[self.table["tweet_id"] == tweet_id, "processed_text"].values
+        text = self.table.loc[self.table["tweet_id"] == tweet_id, "processed_text"].values[0]
 
-        if text.size == 0:
+        if not isinstance(text, str):
             return None
         return text[0]
 
