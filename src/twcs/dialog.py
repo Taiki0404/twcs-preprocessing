@@ -1,12 +1,7 @@
 class Dialog:
-    # TODO: add supporter
-    def __init__(
-        self, authors_seq: list[str], texts_seq: list[str], supporter: str | None, n_authors: int
-    ):
+    def __init__(self, authors_seq: list[str], texts_seq: list[str]):
         self.authors_seq = authors_seq
         self.texts_seq = texts_seq
-        self.supporter = supporter
-        self.n_authors = n_authors
 
     def join_continuous_texts_by_same_author(self) -> list[str]:
         joined_texts = []

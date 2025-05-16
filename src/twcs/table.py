@@ -5,10 +5,16 @@ import pandas as pd
 
 from .config import columns
 from .dialog import Dialog
+from .rules import SequenceLength
 from .twcs import TWCS
 
 
 class TableGenerator:
+    tweet_meta_file = "tweet_meta.csv"
+    dialog_meta_file = "dialog_meta.csv"
+    text_file = "text.csv"
+    seq_file = "seq.csv"
+
     def __init__(self, twcs: TWCS):
         self.twcs = twcs
 
@@ -24,9 +30,13 @@ class TableGenerator:
             right_on="tweet_id",
             how="left",
         )
+
+        dialog_lengths = (
+            df_merged.groupby("dialog_id")["utterance_id"].count().reset_index(name="lengths")
+        )
+
         # for文を使わずに、dialog_idごとにauthor_idをリスト化するための書き方
         df_grouped = df_merged.groupby("dialog_id")["author_id"].unique().reset_index()
-
         supporter_pattern = re.compile(r"[^0-9]+")
 
         def find_supporter(authors):
@@ -37,8 +47,9 @@ class TableGenerator:
 
         df_grouped["supporter"] = df_grouped["author_id"].apply(find_supporter)
         df_grouped["n_authors"] = df_grouped["author_id"].apply(len)
-
+        df_grouped = df_grouped.merge(dialog_lengths, on="dialog_id", how="left")
         df_grouped.drop(columns=["author_id"], inplace=True)
+
         df_grouped.columns = columns["for_dialog_meta_table"]
 
         return df_grouped
@@ -64,28 +75,36 @@ class TableGenerator:
         return pd.DataFrame(records, columns=columns["for_seq_table"])
 
     def generate_tweet_meta_table_as_csv(self, output_dir: str) -> pd.DataFrame:
+        path = f"{output_dir}/{self.tweet_meta_file}"
+
         tweet_meta_table = self.generate_tweet_meta_table()
-        tweet_meta_table.to_csv(f"{output_dir}/tweet_meta.csv", index=False)
+        tweet_meta_table.to_csv(path, index=False)
 
         return tweet_meta_table
 
     def generate_text_table_as_csv(self, output_dir: str) -> pd.DataFrame:
+        path = f"{output_dir}/{self.text_file}"
+
         text_table = self.generate_text_table()
-        text_table.to_csv(f"{output_dir}/text.csv", index=False)
+        text_table.to_csv(path, index=False)
 
         return text_table
 
     def generate_seq_table_as_csv(self, output_dir: str) -> pd.DataFrame:
+        path = f"{output_dir}/{self.seq_file}"
+
         seq_table = self.generate_seq_table()
-        seq_table.to_csv(f"{output_dir}/seq.csv", index=False)
+        seq_table.to_csv(path, index=False)
 
         return seq_table
 
     def generate_dialog_meta_table_as_csv(
         self, output_dir: str, seq_table: pd.DataFrame, tweet_meta_table: pd.DataFrame
     ) -> pd.DataFrame:
+        path = f"{output_dir}/{self.dialog_meta_file}"
+
         dialog_meta_table = self.generate_dialog_meta_table(seq_table, tweet_meta_table)
-        dialog_meta_table.to_csv(f"{output_dir}/dialog_meta.csv", index=False)
+        dialog_meta_table.to_csv(path, index=False)
 
         return dialog_meta_table
 
@@ -122,9 +141,8 @@ class TweetMetaTable:
             return None
         return author[0]
 
-    def retrieve_all_tweet_ids_by_author(self, author_id: str) -> list[int]:
-        tweet_ids = self.table.loc[self.table["author_id"] == author_id, "tweet_id"].to_list()
-        return tweet_ids
+    def include_company_authors(self, author_id: str) -> bool:
+        return author_id in self.company_authors
 
 
 class DialogMetaTable:
@@ -142,8 +160,16 @@ class DialogMetaTable:
     def retrieve_n_authors_by_dialog_id(self, dialog_id: int) -> int:
         return self.table.loc[self.table["dialog_id"] == dialog_id, "n_authors"].values[0]
 
-    def retrieve_dialog_ids_by_author_id(self, author_id: str) -> list[int]:
-        return self.table.loc[self.table["supporter"] == author_id, "dialog_id"].to_list()
+    def retrieve_dialog_ids_by_author_with_rules(
+        self, author_id: str, n_authors: int, seq_len: SequenceLength
+    ) -> list[int]:
+        df = self.table[
+            (self.table["supporter"] == author_id)
+            & (self.table["n_authors"] == n_authors)
+            & (self.table["length"].between(seq_len.min, seq_len.max))
+        ]
+
+        return df["dialog_id"].tolist()
 
 
 class TextTable:
@@ -170,16 +196,6 @@ class SequenceTable:
 
         return df_dialog["utterance_id"].tolist()
 
-    def retrieve_dialog_ids_by_tweet_id(self, tweet_id: int) -> list[int]:
-        return self.table.loc[self.table["utterance_id"] == tweet_id, "dialog_id"].to_list()
-
-    def retrieve_dialog_ids_by_tweet_ids(self, tweet_ids: list[int]) -> list[int]:
-        dialog_ids = []
-        for tweet_id in tweet_ids:
-            dialog_ids.extend(self.retrieve_dialog_ids_by_tweet_id(tweet_id))
-
-        return list(set(dialog_ids))
-
 
 class TableHandler:
     def __init__(self, tweet_meta_path: str, dialog_meta_path, text_path: str, seq_path: str):
@@ -190,29 +206,31 @@ class TableHandler:
 
     def extract_dialog_contents(self, dialog_id: int) -> Dialog:
         tweet_ids = self.seq_table.retrieve_tweet_ids_of_dialog_sequence(dialog_id)
-        supporter = self.dialog_meta_table.retrieve_supporter_by_dialog_id(dialog_id)
-        n_authors = self.dialog_meta_table.retrieve_n_authors_by_dialog_id(dialog_id)
 
-        authors_seq = []
-        texts_seq = []
+        df = pd.DataFrame({"tweet_id": tweet_ids})
 
-        for _id in tweet_ids:
-            author = self.tweet_meta_table.retrieve_author_by_tweet_id(_id)
-            text = self.text_table.retrieve_text_by_tweet_id(_id)
+        df = df.merge(
+            self.tweet_meta_table.table[["tweet_id", "author_id"]], on="tweet_id", how="left"
+        )
+        df = df.merge(
+            self.text_table.table[["tweet_id", "processed_text"]], on="tweet_id", how="left"
+        )
 
-            if author is None or text is None:
-                continue
+        df = df.dropna(subset=["author_id", "processed_text"])
+        authors_seq = df["author_id"].tolist()
+        texts_seq = df["processed_text"].tolist()
 
-            authors_seq.append(author)
-            texts_seq.append(text)
+        return Dialog(authors_seq, texts_seq)
 
-        return Dialog(authors_seq, texts_seq, supporter, n_authors)
+    def retrieve_dialog_ids_by_author_id_with_rules(
+        self,
+        author_id: str,
+        n_authors: int,
+        seq_len: SequenceLength,
+    ) -> list[int]:
+        return self.dialog_meta_table.retrieve_dialog_ids_by_author_with_rules(
+            author_id=author_id, n_authors=n_authors, seq_len=seq_len
+        )
 
-    def retrieve_all_tweet_ids_by_author(self, author_id: str) -> list[int]:
-        return self.tweet_meta_table.retrieve_all_tweet_ids_by_author(author_id)
-
-    def retrieve_dialog_ids_by_tweet_ids(self, tweet_ids: list[int]) -> list[int]:
-        return self.seq_table.retrieve_dialog_ids_by_tweet_ids(tweet_ids)
-
-    def retrieve_dialog_ids_by_author_id(self, author_id: str) -> list[int]:
-        return self.dialog_meta_table.retrieve_dialog_ids_by_author_id(author_id)
+    def include_company_authors(self, author_id: str) -> bool:
+        return self.tweet_meta_table.include_company_authors(author_id)

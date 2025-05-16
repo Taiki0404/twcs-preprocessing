@@ -1,7 +1,8 @@
 import random
 
+from src.twcs.rules import SequenceLength
+
 from ..table import TableHandler
-from .rules import RuleSet
 
 
 class Sampler:
@@ -9,25 +10,22 @@ class Sampler:
         self.table_handler = table_handler
 
     def sample_dialog_id_by_author(
-        self, author_id: str, n_samples: int, rules: RuleSet
+        self, author_id: str, n_samples: int, n_authors: int, seq_len: SequenceLength
     ) -> list[int]:
-        if author_id not in self.table_handler.tweet_meta_table.company_authors:
+        if not self.table_handler.include_company_authors(author_id):
             raise ValueError(f"Author ID {author_id} not found in tweet meta table.")
 
-        dialog_ids = self.table_handler.retrieve_dialog_ids_by_author_id(author_id)
+        dialog_ids = self.table_handler.retrieve_dialog_ids_by_author_id_with_rules(
+            author_id=author_id,
+            n_authors=n_authors,
+            seq_len=seq_len,
+        )
 
-        dialog_ids_to_use = []
-        for dialog_id in dialog_ids:
-            dialog = self.table_handler.extract_dialog_contents(dialog_id)
-
-            if rules.apply_all(dialog):
-                dialog_ids_to_use.append(dialog_id)
-
-        if len(dialog_ids_to_use) < n_samples:
+        if len(dialog_ids) < n_samples:
             print(
-                f"Not enough dialog IDs to sample. Found {len(dialog_ids_to_use)}, "
+                f"Not enough dialog IDs to sample. Found {len(dialog_ids)}, "
                 f"but requested {n_samples}. Returning all available dialog IDs."
             )
-            return dialog_ids_to_use
+            return dialog_ids
 
-        return random.sample(dialog_ids_to_use, n_samples)
+        return random.sample(dialog_ids, n_samples)
