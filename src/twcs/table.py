@@ -194,18 +194,18 @@ class TableHandler:
     def extract_dialog_contents(self, dialog_id: int) -> Dialog:
         tweet_ids = self.seq_table.retrieve_tweet_ids_of_dialog_sequence(dialog_id)
 
-        authors_seq = []
-        texts_seq = []
+        df = pd.DataFrame({"tweet_id": tweet_ids})
 
-        for _id in tweet_ids:
-            author = self.tweet_meta_table.retrieve_author_by_tweet_id(_id)
-            text = self.text_table.retrieve_text_by_tweet_id(_id)
+        df = df.merge(
+            self.tweet_meta_table.table[["tweet_id", "author_id"]], on="tweet_id", how="left"
+        )
+        df = df.merge(
+            self.text_table.table[["tweet_id", "processed_text"]], on="tweet_id", how="left"
+        )
 
-            if author is None or text is None:
-                continue
-
-            authors_seq.append(author)
-            texts_seq.append(text)
+        df = df.dropna(subset=["author_id", "processed_text"])
+        authors_seq = df["author_id"].tolist()
+        texts_seq = df["processed_text"].tolist()
 
         return Dialog(authors_seq, texts_seq)
 
