@@ -122,10 +122,6 @@ class TweetMetaTable:
             return None
         return author[0]
 
-    def retrieve_all_tweet_ids_by_author(self, author_id: str) -> list[int]:
-        tweet_ids = self.table.loc[self.table["author_id"] == author_id, "tweet_id"].to_list()
-        return tweet_ids
-
 
 class DialogMetaTable:
     def __init__(self, csv_path: str):
@@ -170,16 +166,6 @@ class SequenceTable:
 
         return df_dialog["utterance_id"].tolist()
 
-    def retrieve_dialog_ids_by_tweet_id(self, tweet_id: int) -> list[int]:
-        return self.table.loc[self.table["utterance_id"] == tweet_id, "dialog_id"].to_list()
-
-    def retrieve_dialog_ids_by_tweet_ids(self, tweet_ids: list[int]) -> list[int]:
-        dialog_ids = []
-        for tweet_id in tweet_ids:
-            dialog_ids.extend(self.retrieve_dialog_ids_by_tweet_id(tweet_id))
-
-        return list(set(dialog_ids))
-
 
 class TableHandler:
     def __init__(self, tweet_meta_path: str, dialog_meta_path, text_path: str, seq_path: str):
@@ -207,12 +193,6 @@ class TableHandler:
             texts_seq.append(text)
 
         return Dialog(authors_seq, texts_seq, supporter, n_authors)
-
-    def retrieve_all_tweet_ids_by_author(self, author_id: str) -> list[int]:
-        return self.tweet_meta_table.retrieve_all_tweet_ids_by_author(author_id)
-
-    def retrieve_dialog_ids_by_tweet_ids(self, tweet_ids: list[int]) -> list[int]:
-        return self.seq_table.retrieve_dialog_ids_by_tweet_ids(tweet_ids)
 
     def retrieve_dialog_ids_by_author_id(self, author_id: str) -> list[int]:
         return self.dialog_meta_table.retrieve_dialog_ids_by_author_id(author_id)
