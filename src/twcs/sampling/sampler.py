@@ -11,7 +11,7 @@ class Sampler:
     def sample_dialog_id_by_author(
         self, author_id: str, n_samples: int, rules: RuleSet
     ) -> list[int]:
-        if author_id not in self.table_handler.tweet_meta_table.company_authors:
+        if not self.table_handler.include_company_authors(author_id):
             raise ValueError(f"Author ID {author_id} not found in tweet meta table.")
 
         dialog_ids = self.table_handler.retrieve_dialog_ids_by_author_id(author_id)

@@ -127,6 +127,9 @@ class TweetMetaTable:
             return None
         return author[0]
 
+    def include_company_authors(self, author_id: str) -> bool:
+        return author_id in self.company_authors
+
 
 class DialogMetaTable:
     def __init__(self, csv_path: str):
@@ -201,3 +204,6 @@ class TableHandler:
 
     def retrieve_dialog_ids_by_author_id(self, author_id: str) -> list[int]:
         return self.dialog_meta_table.retrieve_dialog_ids_by_author_id(author_id)
+
+    def include_company_authors(self, author_id: str) -> bool:
+        return self.tweet_meta_table.include_company_authors(author_id)
