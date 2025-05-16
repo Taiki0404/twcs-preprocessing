@@ -10,6 +10,11 @@ from .twcs import TWCS
 
 
 class TableGenerator:
+    tweet_meta_file = "tweet_meta.csv"
+    dialog_meta_file = "dialog_meta.csv"
+    text_file = "text.csv"
+    seq_file = "seq.csv"
+
     def __init__(self, twcs: TWCS):
         self.twcs = twcs
 
@@ -70,28 +75,36 @@ class TableGenerator:
         return pd.DataFrame(records, columns=columns["for_seq_table"])
 
     def generate_tweet_meta_table_as_csv(self, output_dir: str) -> pd.DataFrame:
+        path = f"{output_dir}/{self.tweet_meta_file}"
+
         tweet_meta_table = self.generate_tweet_meta_table()
-        tweet_meta_table.to_csv(f"{output_dir}/tweet_meta.csv", index=False)
+        tweet_meta_table.to_csv(path, index=False)
 
         return tweet_meta_table
 
     def generate_text_table_as_csv(self, output_dir: str) -> pd.DataFrame:
+        path = f"{output_dir}/{self.text_file}"
+
         text_table = self.generate_text_table()
-        text_table.to_csv(f"{output_dir}/text.csv", index=False)
+        text_table.to_csv(path, index=False)
 
         return text_table
 
     def generate_seq_table_as_csv(self, output_dir: str) -> pd.DataFrame:
+        path = f"{output_dir}/{self.seq_file}"
+
         seq_table = self.generate_seq_table()
-        seq_table.to_csv(f"{output_dir}/seq.csv", index=False)
+        seq_table.to_csv(path, index=False)
 
         return seq_table
 
     def generate_dialog_meta_table_as_csv(
         self, output_dir: str, seq_table: pd.DataFrame, tweet_meta_table: pd.DataFrame
     ) -> pd.DataFrame:
+        path = f"{output_dir}/{self.dialog_meta_file}"
+
         dialog_meta_table = self.generate_dialog_meta_table(seq_table, tweet_meta_table)
-        dialog_meta_table.to_csv(f"{output_dir}/dialog_meta.csv", index=False)
+        dialog_meta_table.to_csv(path, index=False)
 
         return dialog_meta_table
 
