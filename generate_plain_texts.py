@@ -1,4 +1,5 @@
 import argparse
+from datetime import datetime
 from pathlib import Path
 
 from src.twcs.output.plaintext import PlainTextGenerator
@@ -17,7 +18,14 @@ def read_file_of_dialog_ids(path: str) -> list[int]:
     return [int(line.strip()) for line in lines]
 
 
+def generate_dir_name() -> str:
+    now = datetime.now()
+    return now.strftime("%Y-%m-%d_%H-%M-%S")
+
+
 def to_txt(path: str, texts: list[str]) -> None:
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
+
     with open(path, "w") as f:
         for text in texts:
             f.write(text + "\n")
@@ -36,8 +44,7 @@ def argparse_args():
 
 if __name__ == "__main__":
     args = argparse_args()
-
-    Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
+    dir_name = generate_dir_name()
 
     table_handler = TableHandler(
         TWEET_META_CSV_PATH, DIALOT_META_CSV_PATH, TEXT_CSV_PATH, SEQ_CSV_PATH
@@ -49,7 +56,8 @@ if __name__ == "__main__":
 
         if plain_text is None:
             print(f"Dialog ID {dialog_id} not found in the data.")
+            continue
             # TODO: logging
-        else:
-            path = f"{OUTPUT_DIR}/dialog_{dialog_id}.txt"
-            to_txt(path, plain_text)
+
+        path = f"{OUTPUT_DIR}/{dir_name}/dialog_{dialog_id}.txt"
+        to_txt(path, plain_text)
