@@ -46,4 +46,4 @@ if __name__ == "__main__":
     )
     sorted_samples = sorted(samples)
 
-    to_txt(f"{OUTPUT_DIR}/{args.company}_{args.n_samples}.txt", sorted_samples)
+    to_txt(f"{OUTPUT_DIR}/{args.company}_{len(samples)}.txt", sorted_samples)
