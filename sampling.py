@@ -24,7 +24,7 @@ def argparse_args():
         "--company", "-c", type=str, required=True, help="Company name to sample from."
     )
     parser.add_argument(
-        "--n_samples", "-n", type=int, required=True, help="Number of samples to generate."
+        "--n-samples", "-n", type=int, required=True, help="Number of samples to generate."
     )
     return parser.parse_args()
 
