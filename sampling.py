@@ -1,4 +1,5 @@
 import argparse
+from datetime import datetime
 from pathlib import Path
 
 from src.twcs.rules import SequenceLength
@@ -10,6 +11,11 @@ TWEET_META_CSV_PATH = "./output/tweet_meta.csv"
 DIALOT_META_CSV_PATH = "./output/dialog_meta.csv"
 TEXT_CSV_PATH = "./output/text.csv"
 SEQ_CSV_PATH = "./output/seq.csv"
+
+
+def generate_date_dirname() -> str:
+    now = datetime.now()
+    return now.strftime("%Y-%m-%d_%H-%M-%S")
 
 
 def to_txt(path: str, ids: list[int]) -> None:
@@ -31,6 +37,7 @@ def argparse_args():
 
 if __name__ == "__main__":
     args = argparse_args()
+    date_dir = generate_date_dirname()
 
     Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
 
@@ -46,4 +53,4 @@ if __name__ == "__main__":
     )
     sorted_samples = sorted(samples)
 
-    to_txt(f"{OUTPUT_DIR}/{args.company}_{len(samples)}.txt", sorted_samples)
+    to_txt(f"{OUTPUT_DIR}/{date_dir}/{args.company}_{len(samples)}.txt", sorted_samples)
