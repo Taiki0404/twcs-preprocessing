@@ -3,7 +3,18 @@
 kaggleで公開されているデータセット「[Customer Support on Twitter](https://www.kaggle.com/datasets/thoughtvector/customer-support-on-twitter)」
 の前処理を行うためのリポジトリです。
 
-## 使い方
+## 主なファイル
+
+1. `main.py`
+	- オリジナルの`twcs.csv`ファイルから、4つのファイルを生成する。
+2. `sampling.py`
+	- 生成したファイルを元に、対話IDをサンプリングする。
+3. `generate_plain_texts.py`
+	- 対話IDに紐づくツイート文章をテキストファイルとして出力する。
+
+## main.py
+
+### 使い方
 
 1. kaggleから[Customer Support on Twitter](https://www.kaggle.com/datasets/thoughtvector/customer-support-on-twitter)をダウンロードする。
 2. `archive.zip`を解凍する。
@@ -11,9 +22,9 @@ kaggleで公開されているデータセット「[Customer Support on Twitter]
 4. `python main.py --twcs-path twcs.csv`を実行する。
 5. `output`ディレクトリに4つのファイルが出力される。
 
-## 出力されるファイルについて
+### 出力されるファイルについて
 
-### tweet_meta.csv
+#### tweet_meta.csv
 
 ツイートのメタデータを格納している。
 
@@ -22,7 +33,7 @@ kaggleで公開されているデータセット「[Customer Support on Twitter]
 | 119237   | 105834       | True    | Wed Oct 11 06:55:44 +0000 2017 |
 | 119238   | ChaseSupport | False   | Wed Oct 11 13:25:49 +0000 2017 |
 
-### text.csv
+#### text.csv
 
 ツイートごとに前処理を行ったテキストを格納している。
 
@@ -31,7 +42,7 @@ kaggleで公開されているデータセット「[Customer Support on Twitter]
 | 119237   | causing the reply to be disregarded and the tapped notification under the keyboard is opened                 |
 | 119238   | your business means a lot to us. please dm your name, zip code and additional details about your concern. rr |
 
-### seq.csv
+#### seq.csv
 
 対話におけるツイートの順序を格納している。
 
@@ -40,13 +51,48 @@ kaggleで公開されているデータセット「[Customer Support on Twitter]
 | 119237    | 0        | 0         |
 | 119236    | 1        | 0         |
 
-### dialog_meta.csv
+#### dialog_meta.csv
 
 対話のメタデータを格納している。
 
 | dialog_id | supporter    | n_authors | length |
 | --------- | ------------ | --------- | ------ |
 | 0         | ChaseSupport | 2         | 2      |
+
+## sampling.py
+
+### サンプリングの前提
+
+- 対話に含まれる発話数：2~6
+	- データ数の分布の関係でこの設定にしている。
+- 対話に参加している話者数：2
+
+### パラメータ
+
+#### `--campany, -c`
+
+サンプリングする会社を指定します。
+
+#### `--n-samples, -n`
+
+サンプリングする数を指定します。
+
+### 出力
+
+`output/{日付}/samples`ディレクトリに`{会社名}_{サンプル数}.txt`というテキストファイルが出力されます。
+テキストファイルには、サンプリングした対話IDが記述されています。
+
+## generate_plain_texts.py
+
+### パラメータ
+
+#### `--input-path`
+
+[[#sampling.py]]で出力されたテキストファイルを指定します。
+
+### 出力
+
+`--input-path`で指定したファイルと同階層に`txt`ディレクトリが生成され、その中にdialog_{対話ID}.txtというテキストファイルが出力されます。
 
 ## 注意事項
 
