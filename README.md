@@ -1,21 +1,21 @@
 # twcs preprocessing
 
 kaggleで公開されているデータセット「[Customer Support on Twitter](https://www.kaggle.com/datasets/thoughtvector/customer-support-on-twitter)」
-の前処理を行うためのリポジトリ
+の前処理を行うためのリポジトリです。
 
 ## 使い方
 
-1. kaggleから[Customer Support on Twitter](https://www.kaggle.com/datasets/thoughtvector/customer-support-on-twitter)をダウンロード
-2. `archive.zip`を解凍
-3. `twcs.csv`を`main.py`と同じ階層に配置
-4. `python main.py --twcs-path twcs.csv`を実行する
-5. `output`ディレクトリに4つのファイルが出力される
+1. kaggleから[Customer Support on Twitter](https://www.kaggle.com/datasets/thoughtvector/customer-support-on-twitter)をダウンロードする。
+2. `archive.zip`を解凍する。
+3. `twcs.csv`を`main.py`と同じ階層に配置する。
+4. `python main.py --twcs-path twcs.csv`を実行する。
+5. `output`ディレクトリに4つのファイルが出力される。
 
 ## 出力されるファイルについて
 
 ### tweet_meta.csv
 
-ツイートのメタデータを格納している
+ツイートのメタデータを格納している。
 
 | tweet_id | author_id    | inbound | created_at                     |
 | -------- | ------------ | ------- | ------------------------------ |
@@ -24,7 +24,7 @@ kaggleで公開されているデータセット「[Customer Support on Twitter]
 
 ### text.csv
 
-ツイートごとに前処理を行ったテキストを格納している
+ツイートごとに前処理を行ったテキストを格納している。
 
 | tweet_id | processed_text                                                                                               |
 | -------- | ------------------------------------------------------------------------------------------------------------ |
@@ -33,7 +33,7 @@ kaggleで公開されているデータセット「[Customer Support on Twitter]
 
 ### seq.csv
 
-対話におけるツイートの順序を格納している
+対話におけるツイートの順序を格納している。
 
 | utterance | sequence | dialog_id |
 | --------- | -------- | --------- |
@@ -42,7 +42,7 @@ kaggleで公開されているデータセット「[Customer Support on Twitter]
 
 ### dialog_meta.csv
 
-対話のメタデータを格納している
+対話のメタデータを格納している。
 
 | dialog_id | supporter    | n_authors | length |
 | --------- | ------------ | --------- | ------ |
