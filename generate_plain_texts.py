@@ -56,7 +56,6 @@ if __name__ == "__main__":
         if plain_text is None:
             print(f"Dialog ID {dialog_id} not found in the data.")
             continue
-            # TODO: logging
 
         path = f"{dir_name}/dialog_{dialog_id}.txt"
         to_txt(path, plain_text)
