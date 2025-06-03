@@ -2,9 +2,9 @@ import argparse
 from datetime import datetime
 from pathlib import Path
 
-from src.twcs.rules import SequenceLength
-from src.twcs.sampling.sampler import Sampler
-from src.twcs.table import TableHandler
+from src.twcs.sampler import Sampler
+from src.twcs.table.handler import TableHandler
+from src.twcs.table.rules import SequenceLength
 
 OUTPUT_DIR = "./output/samples"
 TWEET_META_CSV_PATH = "./output/tweet_meta.csv"

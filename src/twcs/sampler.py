@@ -1,8 +1,7 @@
 import random
 
-from src.twcs.rules import SequenceLength
-
-from ..table import TableHandler
+from .table.handler import TableHandler
+from .table.rules import SequenceLength
 
 
 class Sampler:
