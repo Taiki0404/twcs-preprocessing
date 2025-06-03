@@ -1,6 +1,6 @@
 from typing import Optional
 
-from ..table import TableHandler
+from ..table.handler import TableHandler
 
 
 class PlainTextGenerator:

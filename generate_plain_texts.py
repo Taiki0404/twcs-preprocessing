@@ -1,8 +1,8 @@
 import argparse
 from pathlib import Path
 
-from src.twcs.output.plaintext import PlainTextGenerator
-from src.twcs.table import TableHandler
+from src.twcs.generator.plaintext import PlainTextGenerator
+from src.twcs.table.handler import TableHandler
 
 OUTPUT_DIR = "txt"
 TWEET_META_CSV_PATH = "./output/tweet_meta.csv"
