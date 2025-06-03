@@ -6,7 +6,7 @@ from src.twcs.sampler import Sampler
 from src.twcs.table.handler import TableHandler
 from src.twcs.table.rules import SequenceLength
 
-OUTPUT_DIR = "./output/samples"
+OUTPUT_BASE_DIR = "./output/samples"
 TWEET_META_CSV_PATH = "./output/tweet_meta.csv"
 DIALOT_META_CSV_PATH = "./output/dialog_meta.csv"
 TEXT_CSV_PATH = "./output/text.csv"
@@ -39,7 +39,9 @@ if __name__ == "__main__":
     args = argparse_args()
     date_dir = generate_date_dirname()
 
-    Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
+    output_dir = f"{OUTPUT_BASE_DIR}/{date_dir}"
+
+    Path(output_dir).mkdir(parents=True, exist_ok=True)
 
     table_handler = TableHandler(
         TWEET_META_CSV_PATH, DIALOT_META_CSV_PATH, TEXT_CSV_PATH, SEQ_CSV_PATH
@@ -53,4 +55,4 @@ if __name__ == "__main__":
     )
     sorted_samples = sorted(samples)
 
-    to_txt(f"{OUTPUT_DIR}/{date_dir}/{args.company}_{len(samples)}.txt", sorted_samples)
+    to_txt(f"{output_dir}/{args.company}_{len(samples)}.txt", sorted_samples)
