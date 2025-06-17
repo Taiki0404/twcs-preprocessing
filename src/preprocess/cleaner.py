@@ -8,6 +8,7 @@ from .regex_patterns import RegexPatterns
 class TextCleaner:
     def __init__(self, regex_patterns: RegexPatterns):
         self.regex_patterns = regex_patterns
+        self.url_mask_string = "URL"
 
     def remove_emojis(self, text: str) -> str:
         return emoji.replace_emoji(text, replace="")
@@ -32,3 +33,6 @@ class TextCleaner:
 
     def remove_symbol(self, text: str) -> str:
         return re.sub(self.regex_patterns.SYMBOLS, "", text)
+
+    def mask_url(self, text: str) -> str:
+        return re.sub(self.regex_patterns.URL, self.url_mask_string, text)
