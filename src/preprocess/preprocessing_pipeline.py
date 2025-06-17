@@ -27,7 +27,7 @@ class TextPreprocessingPipeline:
             self.cleaner.remove_symbol,
             self.normalizer.unify_spaces,
             self.normalizer.strip,
-            self.normalizer.lower,
+            # self.normalizer.lower,
             self.normalizer.normalize_unicode,
         ]
 
